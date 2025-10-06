@@ -1,0 +1,18 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "mcp.servers": {
+    "workspace-tools": {
+      "command": "python",
+      "args": ["-m", "arcade_mcp", "stdio"],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "ARCADE_API_KEY": "${env:ARCADE_API_KEY}"
+      }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "https://raw.githubusercontent.com/aws/amazon-q-developer-cli/refs/heads/main/schemas/agent-v1.json",
+  "name": "example-agent",
+  "description": "A comprehensive example agent demonstrating all configuration options",
+  "prompt": "You are a helpful development assistant with expertise in software engineering best practices.",
+  "mcpServers": {
+    "fetch": {
+      "command": "uvx",
+      "args": ["mcp-server-fetch"],
+      "env": {},
+      "timeout": 120000
+    },
+    "git": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-git"],
+      "env": {},
+      "timeout": 120000
+    }
+  },
+  "tools": [
+    "fs_read",
+    "fs_write",
+    "execute_bash",
+    "@git",
+    "@fetch/fetch_url"
+  ],
+  "toolAliases": {
+    "@git/git_status": "status",
+    "@fetch/fetch_url": "get"
+  },
+  "allowedTools": [
+    "fs_read",
+    "@git/git_status"
+  ],
+  "toolsSettings": {
+    "fs_write": {
+      "allowedPaths": ["src/**", "tests/**", "docs/**"]
+    },
+    "execute_bash": {
+      "alwaysAllow": [
+        {
+          "preset": "readOnly"
+        }
+      ]
+    }
+  },
+  "resources": [
+    "file://README.md",
+    "file://docs/**/*.md",
+    "file://.amazonq/rules/**/*.md"
+  ],
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "git status"
+      }
+    ],
+    "userPromptSubmit": [
+      {
+        "command": "ls -la"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "echo 'File written' >> /tmp/agent-log.txt"
+      }
+    ]
+  },
+  "useLegacyMcpJson": true,
+  "model": "claude-sonnet-4"
+}

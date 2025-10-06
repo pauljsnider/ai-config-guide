@@ -1,0 +1,35 @@
+{
+  "hooks": {
+    "agentSpawn": [
+      {
+        "command": "git status && git log -1 --oneline"
+      }
+    ],
+    "userPromptSubmit": [
+      {
+        "command": "ls -la"
+      }
+    ],
+    "preToolUse": [
+      {
+        "matcher": "execute_bash",
+        "command": "{ echo \"$(date) - Bash command:\"; cat; echo; } >> /tmp/bash_audit_log"
+      },
+      {
+        "matcher": "use_aws",
+        "command": "{ echo \"$(date) - AWS CLI call:\"; cat; echo; } >> /tmp/aws_audit_log"
+      }
+    ],
+    "postToolUse": [
+      {
+        "matcher": "fs_write",
+        "command": "jq -r '.tool_input.operations[].path' | grep '\\.rs$' && cargo fmt --all"
+      }
+    ],
+    "stop": [
+      {
+        "command": "npm run build"
+      }
+    ]
+  }
+}

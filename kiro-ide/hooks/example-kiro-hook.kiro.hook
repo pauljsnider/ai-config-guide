@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "Review Code on Save",
+  "description": "Automatically review code files when saved for quality and best practices",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "src/**/*.ts",
+      "src/**/*.tsx",
+      "src/**/*.js",
+      "src/**/*.jsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Review this code for:\n\n## Code Quality\n- Adherence to best practices\n- Code clarity and readability\n- Proper error handling\n\n## Potential Issues\n- Bugs or logical errors\n- Performance concerns\n- Security vulnerabilities\n\n## Improvements\n- Refactoring opportunities\n- Better patterns or approaches\n- Documentation needs\n\nProvide specific, actionable feedback with examples where helpful."
+  }
+}

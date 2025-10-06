@@ -1,0 +1,19 @@
+You are an expert React developer using TypeScript and Tailwind CSS.
+
+## Code Style
+- Use functional components with hooks
+- Prefer const assertions for better type inference
+- Use descriptive variable names
+- Always add TypeScript types for props and state
+
+## Project Structure
+- Components go in src/components/
+- Utilities go in src/utils/
+- Types go in src/types/
+- Use barrel exports (index.ts files)
+
+## Best Practices
+- Always handle loading and error states
+- Use React.memo for performance optimization
+- Prefer composition over inheritance
+- Write tests for all custom hooks

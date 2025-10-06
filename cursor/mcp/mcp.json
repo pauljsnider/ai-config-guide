@@ -1,0 +1,25 @@
+{
+  "mcpServers": {
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"],
+      "env": {
+        "MEMORY_FILE_PATH": "~/.cursor/memory.json"
+      },
+      "disabled": false,
+      "autoApprove": []
+    },
+    "docker-gateway": {
+      "command": "docker",
+      "args": ["mcp", "gateway", "run"],
+      "disabled": false,
+      "autoApprove": []
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"],
+      "disabled": false,
+      "autoApprove": []
+    }
+  }
+}
