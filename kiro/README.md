@@ -20,7 +20,13 @@ copy settings\mcp.json ~\.kiro\settings\
 mkdir ~\.kiro\steering
 copy steering\*.md ~\.kiro\steering\
 
-# 6. Install Playwright browsers
+# 6. Copy agents and hooks
+mkdir ~\.kiro\agents
+mkdir ~\.kiro\hooks
+copy agents\*.json ~\.kiro\agents\
+copy hooks\*.json ~\.kiro\hooks\
+
+# 7. Install Playwright browsers
 npx playwright install chromium
 ```
 
@@ -149,6 +155,7 @@ Pre-configured steering files are available in the `steering/` folder:
 | **atlassian-mcp.md** | Hosted Atlassian MCP setup (Jira/Confluence) |
 | **github-cli.md** | Safe, repeatable GitHub CLI workflows |
 | **kiro-configuration.md** | Kiro config paths and debug references |
+| **tech-debt-rules.md** | Tech debt scoring model and collection rules |
 
 ### Install Steering Files
 
@@ -167,6 +174,67 @@ copy steering\*.md ~\.kiro\steering\
 - **Auto-loaded:** `product.md`, `structure.md`, `tech.md` load automatically when present
 
 See [`steering/README.md`](steering/README.md) for details and examples.
+
+---
+
+## Agents
+
+Custom agents extend Kiro CLI with specialized behaviors and prompts.
+
+Pre-configured agents are available in the `agents/` folder:
+
+| Agent | Description |
+|-------|-------------|
+| **tech-debt-collector** | Guides you through collecting and scoring tech debt from multiple sources |
+
+### Install Agents
+
+```powershell
+# Create agents directory
+mkdir ~\.kiro\agents
+
+# Copy agent files
+copy agents\*.json ~\.kiro\agents\
+```
+
+### Using Agents
+
+```powershell
+# Start with specific agent
+kiro-cli --agent tech-debt-collector
+
+# Or swap during a session
+/agent swap
+
+# List available agents
+/agent list
+```
+
+See [`agents/README.md`](agents/README.md) for configuration details.
+
+---
+
+## Hooks
+
+Hooks are automated triggers that execute agent prompts or shell commands.
+
+Pre-configured hooks are available in the `hooks/` folder:
+
+| Hook | Trigger | Description |
+|------|---------|-------------|
+| **tech-debt-score** | manual | Scores a project for tech debt |
+
+### Install Hooks
+
+```powershell
+# Create hooks directory
+mkdir ~\.kiro\hooks
+
+# Copy hook files
+copy hooks\*.json ~\.kiro\hooks\
+```
+
+See [`hooks/README.md`](hooks/README.md) for configuration details.
 
 ---
 

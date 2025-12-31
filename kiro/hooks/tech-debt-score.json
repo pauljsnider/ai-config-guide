@@ -1,0 +1,13 @@
+{
+  "name": "tech-debt-score",
+  "description": "Scores a project for tech debt across multiple sources. Produces a prioritized debt report.",
+  "trigger": "manual",
+  "allowedTools": [
+    "read",
+    "write",
+    "shell",
+    "grep",
+    "glob"
+  ],
+  "instructions": "Score this project for tech debt. Reference the tech-debt-rules.md steering file for all rules.\n\n**Phase 1: Discovery**\nAsk the user:\n1. What project/repo to analyze?\n2. Which sources are available? (GitHub, Jira, Confluence, Mend, Checkmarx)\n3. Any exports/reports available? (CSV, JSON)\n4. Jira project key or Confluence space?\n\n**Phase 2: Data Collection**\nFor each available source:\n- GitHub: Use `gh` CLI for repo metadata, PR history, branches, CODEOWNERS\n- Jira: Query issues by label/component, analyze aging\n- Confluence: Read architecture docs, ADRs, standards\n- Mend: Request export or query if MCP available\n- Checkmarx: Request export or query if MCP available\n\n**Phase 3: Categorize Findings**\nGroup into 5 categories:\n- Dependency/Supply Chain Debt (Mend)\n- Code Security Debt (Checkmarx)\n- Engineering Process Debt (GitHub + Jira)\n- Documentation/Architecture Drift (Confluence)\n- Ownership/Maintainability Debt (GitHub + Jira)\n\n**Phase 4: Score Each Finding**\nCompute: Debt Score = (Risk x Exposure x Age) / Effort\n- Risk: 1-10 based on severity, CVSS, exploit maturity\n- Exposure: 1-10 based on prod-facing, data sensitivity\n- Age: days since first detection, scaled 1-10\n- Effort: S=1, M=3, L=5\nNormalize to 0-100.\n\n**Phase 5: Apply Noise Control**\n- Dedupe across tools\n- Cap at 5 stories per repo\n- Mark confidence: high/medium/low\n\n**Phase 6: Output Report**\n1. Summary with overall debt score\n2. Top 20 ranked items with scores\n3. Breakdown by category\n4. Remediation recommendations\n\nPrompt: \"Tech debt score complete. Create Jira epic and Confluence report? [yes/no]\""
+}
