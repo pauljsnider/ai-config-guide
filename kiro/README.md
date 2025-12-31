@@ -143,6 +143,85 @@ See [`settings/README.md`](settings/README.md) for setup instructions.
 
 ---
 
+## Understanding Kiro Features
+
+Kiro CLI has three main customization features. Here's when to use each:
+
+### Feature Comparison
+
+| Feature | Purpose | Activation | Scope |
+|---------|---------|------------|-------|
+| **Steering** | Passive context and rules | Always loaded | All conversations |
+| **Agents** | Dedicated workflow modes | `--agent` flag or `/agent swap` | Entire session |
+| **Hooks** | Event-triggered automation | Events or manual invocation | Single execution |
+
+### When to Use What
+
+| Need | Use |
+|------|-----|
+| Persistent rules for all sessions | **Steering** |
+| Team coding standards | **Steering** |
+| Dedicated workflow mode (e.g., code review, debugging) | **Agent** |
+| Restrict which tools are available | **Agent** |
+| Auto-approve specific tools (no prompts) | **Agent** (`allowedTools`) |
+| Validate or block tool execution | **Agent** (lifecycle hooks) |
+| One-off automation task | **Standalone Hook** |
+| React to file changes (lint on save) | **Standalone Hook** |
+
+### How They Work Together
+
+```
+┌─────────────────────────────────────────────────────┐
+│                     AGENT                           │
+│   (Active persona with tools, permissions, context) │
+│                                                     │
+│  ┌───────────┐  ┌─────────────┐  ┌───────────────┐ │
+│  │  Tools    │  │AllowedTools │  │   Resources   │ │
+│  │(available)│  │(auto-approve)│  │   (context)   │ │
+│  └───────────┘  └─────────────┘  └───────────────┘ │
+│                                                     │
+│  ┌───────────────────────────────────────────────┐ │
+│  │            Lifecycle Hooks                     │ │
+│  │ agentSpawn → preToolUse → postToolUse → stop  │ │
+│  └───────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────┘
+                      ↑ Loads
+┌─────────────────────────────────────────────────────┐
+│                    STEERING                         │
+│         (Passive context, always available)         │
+│   product.md | tech.md | structure.md | custom.md  │
+└─────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────┐
+│               STANDALONE HOOKS                      │
+│     (Event-triggered, independent of agents)        │
+│   manual | file-save | file-create | file-delete   │
+└─────────────────────────────────────────────────────┘
+```
+
+### Two Types of Hooks
+
+**1. Agent Lifecycle Hooks** (embedded in agent config):
+
+| Hook | When | Use Case |
+|------|------|----------|
+| `agentSpawn` | Agent initializes | Setup, environment checks |
+| `userPromptSubmit` | User sends message | Prompt preprocessing |
+| `preToolUse` | Before tool runs | Validation, can block execution |
+| `postToolUse` | After tool completes | Logging, cleanup |
+| `stop` | Response finished | Testing, formatting |
+
+**2. Standalone Trigger Hooks** (in `.kiro/hooks/`):
+
+| Trigger | When | Use Case |
+|---------|------|----------|
+| `manual` | User invokes | On-demand workflows |
+| `file-save` | File saved | Linting, formatting |
+| `file-create` | File created | Scaffolding, templates |
+| `file-delete` | File deleted | Cleanup tasks |
+
+---
+
 ## Steering Files
 
 Steering files give Kiro persistent knowledge so you don't have to repeat conventions in every chat. They make responses more consistent and task-focused.
@@ -240,6 +319,15 @@ See [`hooks/README.md`](hooks/README.md) for configuration details.
 
 ## Resources
 
+### Kiro Documentation
+- [Kiro CLI Overview](https://kiro.dev/docs/cli/)
+- [Custom Agents](https://kiro.dev/docs/cli/custom-agents/)
+- [Agent Configuration Reference](https://kiro.dev/docs/cli/custom-agents/configuration-reference/)
+- [Hooks](https://kiro.dev/docs/cli/hooks/)
+- [Steering](https://kiro.dev/docs/cli/steering/)
+- [MCP Configuration](https://kiro.dev/docs/mcp/configuration/)
+
+### GitHub Integration
 - [GitHub MCP Server Repository](https://github.com/github/github-mcp-server)
 - [GitHub CLI Documentation](https://cli.github.com/manual/)
 - [Create Personal Access Token](https://github.com/settings/tokens)
