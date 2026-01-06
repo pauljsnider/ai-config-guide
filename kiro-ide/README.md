@@ -296,6 +296,6 @@ ls ~/.kiro/hooks/
 
 ---
 
-**Last Updated:** 2025-10-04
+**Last Updated:** 2026-01-07
 
 **Note:** Kiro IDE is in Public Preview. Features and configuration may change. All configuration examples use placeholder values.

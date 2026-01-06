@@ -48,16 +48,19 @@ Model Context Protocol (MCP) is an open standard that enables AI systems to secu
 3. Install and launch Kiro IDE
 4. Login with your account (GitHub, Google, AWS Builder ID, or AWS IAM Identity Center)
 
-**Note:** Kiro is currently in Public Preview.
+**macOS Homebrew Install**
+```bash
+brew install kiro
+```
 
-### Node.js and Package Managers
+### Languages and Package Managers
 
-Most MCP servers require Node.js and package managers:
+Most MCP servers require Node.js or Python in addition to their respective package managers `uv` and `npm`:
 
 **Node.js:**
 ```bash
 # macOS (Homebrew)
-brew install node
+brew install node npm
 
 # Ubuntu/Debian
 sudo apt install nodejs npm
@@ -69,13 +72,10 @@ sudo apt install nodejs npm
 **Python (for uvx/pipx):**
 ```bash
 # macOS
-brew install python
+brew install python uv
 
 # Ubuntu/Debian
-sudo apt install python3 python3-pip
-
-# Install uvx
-pip3 install uvx
+sudo apt install python3 python3-pip uv
 ```
 
 ---
@@ -171,10 +171,7 @@ If you prefer to install manually or customize the configuration:
     "atlassian": {
       "command": "npx",
       "args": ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"],
-      "env": {
-        "ATLASSIAN_USER_EMAIL": "your.email@company.com",
-        "ATLASSIAN_API_TOKEN": "your_scoped_api_token"
-      },
+      "env": {},
       "disabled": false,
       "autoApprove": []
     },
@@ -233,10 +230,6 @@ npx -y @modelcontextprotocol/server-memory
 
 **Installation:**
 ```bash
-# Install uvx first
-pip3 install uvx
-
-# Test fetch server
 uvx mcp-server-fetch
 ```
 
@@ -341,9 +334,9 @@ npx -y @aashari/mcp-server-atlassian-bitbucket
 
 ### 5. Atlassian Server
 
-**Description:** Jira, Confluence, and other Atlassian services integration
+**Description:** Remote Atlassian services (Jira, Confluence) via OAuth
 
-**Installation:**
+**Installation/Authentication:**
 ```bash
 npx -y mcp-remote https://mcp.atlassian.com/v1/sse
 ```
@@ -354,20 +347,14 @@ npx -y mcp-remote https://mcp.atlassian.com/v1/sse
   "atlassian": {
     "command": "npx",
     "args": ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"],
-    "env": {
-      "ATLASSIAN_USER_EMAIL": "your.email@company.com",
-      "ATLASSIAN_API_TOKEN": "your_api_token"
-    },
+    "env": {},
     "disabled": false,
     "autoApprove": []
   }
 }
 ```
 
-**Credential Setup:**
-1. Go to https://id.atlassian.com/manage-profile/security/api-tokens
-2. Create API token
-3. Update `ATLASSIAN_USER_EMAIL` and `ATLASSIAN_API_TOKEN`
+**Requires Credentials:** OAuth authentication via web browser on first use, credentials are cached in `~/.mcp-auth`
 
 **Use Cases:**
 - Jira issue management
@@ -413,38 +400,36 @@ docker mcp gateway run
 
 ## Credential Setup
 
-### Environment Variables
+### Bitbucket Credentials
 
-Store credentials securely using environment variables:
+**Recommended: Scoped API Token**
 
-**macOS/Linux (`~/.zshrc` or `~/.bashrc`):**
+1. Go to https://id.atlassian.com/manage-profile/security/api-tokens
+2. Click **"Create API token with scopes"**
+3. Select **"Bitbucket"** as the product
+4. Choose scopes:
+   - **Read-only**: `repository`, `workspace`
+   - **Full access**: `repository`, `workspace`, `pullrequest`
+5. Copy the token (starts with `ATATT`)
+6. Use with your Atlassian email
+
+**Environment Variables:**
 ```bash
-export ATLASSIAN_USER_EMAIL="your.email@company.com"
-export ATLASSIAN_API_TOKEN="your_api_token"
 export ATLASSIAN_BITBUCKET_USERNAME="your_username"
 export ATLASSIAN_BITBUCKET_APP_PASSWORD="your_app_password"
 ```
 
-**Windows (PowerShell):**
-```powershell
-$env:ATLASSIAN_USER_EMAIL="your.email@company.com"
-$env:ATLASSIAN_API_TOKEN="your_api_token"
-```
+### Atlassian OAuth Credentials
 
-### MCP Configuration
+The Atlassian MCP server uses OAuth 2.1 authentication. On first use:
 
-Reference environment variables in `mcp.json`:
+1. Run the MCP server
+2. A browser window will open for authentication
+3. Log in with your Atlassian account
+4. Grant permissions to the MCP server
+5. Credentials are cached automatically at `~/.mcp-auth`
 
-```json
-{
-  "atlassian": {
-    "env": {
-      "ATLASSIAN_USER_EMAIL": "your.email@company.com",
-      "ATLASSIAN_API_TOKEN": "your_api_token"
-    }
-  }
-}
-```
+**Required:** Atlassian Cloud account with access to Jira/Confluence
 
 ---
 
@@ -529,6 +514,6 @@ chmod +x install-mcp.sh
 
 ---
 
-**Last Updated:** 2025-10-04
+**Last Updated:** 2026-01-07
 
 **Note:** All configuration examples use placeholder values. Replace with your actual credentials and settings.
