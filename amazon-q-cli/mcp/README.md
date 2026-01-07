@@ -185,10 +185,7 @@ If you prefer to install manually or customize the configuration:
     "atlassian": {
       "command": "npx",
       "args": ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"],
-      "env": {
-        "ATLASSIAN_USER_EMAIL": "your.email@company.com",
-        "ATLASSIAN_API_TOKEN": "your_scoped_api_token"
-      },
+      "env": {},
       "disabled": false,
       "autoApprove": []
     },
@@ -339,7 +336,7 @@ npx -y @aashari/mcp-server-atlassian-bitbucket
 
 **Description:** Remote Atlassian services (Jira, Confluence) via OAuth
 
-**Installation:**
+**Installation/Authentication:**
 ```bash
 npx -y mcp-remote https://mcp.atlassian.com/v1/sse
 ```
@@ -350,18 +347,15 @@ npx -y mcp-remote https://mcp.atlassian.com/v1/sse
   "atlassian": {
     "command": "npx",
     "args": ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"],
-    "env": {
-      "ATLASSIAN_USER_EMAIL": "your.email@company.com",
-      "ATLASSIAN_API_TOKEN": "your_scoped_api_token"
-    }
+    "env": {}
   }
 }
 ```
 
-**Requires Credentials:** OAuth authentication via web browser on first use
+**Requires Credentials:** OAuth authentication via web browser on first use, credentials are cached in `~/.mcp-auth`
 
 **Documentation:**
-- Official: https://support.atlassian.com/atlassian-rovo-mcp-server/
+- Official: https://support.atlassian.com/atlassian-rovo-mcp-server/docs/getting-started-with-the-atlassian-remote-mcp-server/
 - Package: `mcp-remote`
 
 ---
@@ -537,7 +531,7 @@ docker mcp catalog init
 - Fetch: https://github.com/modelcontextprotocol/servers/tree/main/src/fetch
 - Playwright: https://github.com/microsoft/playwright-mcp
 - Bitbucket: https://github.com/aashari/mcp-server-atlassian-bitbucket
-- Atlassian: https://developer.atlassian.com/platform/model-context-protocol/
+- Atlassian: https://github.com/atlassian/atlassian-mcp-server
 - Docker Gateway: https://docs.docker.com/desktop/mcp/
 
 **Related Guides:**
@@ -549,6 +543,6 @@ docker mcp catalog init
 
 ---
 
-**Last Updated:** 2025-10-04
+**Last Updated:** 2026-01-07
 
 **Note:** All configuration examples use placeholder values. Replace with your actual credentials and settings.

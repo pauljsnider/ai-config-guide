@@ -13,10 +13,7 @@
     "atlassian": {
       "command": "npx",
       "args": ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"],
-      "env": {
-        "ATLASSIAN_USER_EMAIL": "your.email@company.com",
-        "ATLASSIAN_API_TOKEN": "your_scoped_api_token"
-      },
+      "env": {},
       "disabled": false,
       "autoApprove": []
     },
