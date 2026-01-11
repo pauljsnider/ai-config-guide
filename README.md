@@ -10,6 +10,13 @@ It exists because AI tools often lose track of how they are configured: where se
 
 ## Tools Covered
 
+### [Claude Code](./claude/)
+
+Anthropic's official CLI for Claude with AI-powered development assistance.
+
+**Configurations:**
+- **[Skills](./claude/skills/)** - Self-contained AI capabilities with custom tools and workflows
+
 ### [Amazon Q CLI](./amazon-q-cli/)
 
 AWS's agentic command-line interface for AI-powered development assistance.
@@ -129,6 +136,41 @@ aws configure
 
 ## Quick Start
 
+### Claude Code
+
+1. **Install Claude Code:**
+   ```bash
+   # macOS/Linux
+   curl -fsSL https://raw.githubusercontent.com/anthropics/claude-code/main/install.sh | sh
+
+   # Or via npm
+   npm install -g @anthropics/claude
+   ```
+
+2. **Configure Skills:**
+   ```bash
+   # Create skills directory
+   mkdir -p ~/.claude/skills
+
+   # Copy Microsoft Graph skills
+   cp -r claude/skills/ms-graph-toolkit ~/.claude/skills/
+   cp -r claude/skills/ms-graph-search-sdk ~/.claude/skills/
+   cp -r claude/skills/ms-graph-search ~/.claude/skills/
+   ```
+
+3. **Use Skills:**
+   ```bash
+   # Claude automatically invokes skills based on your request
+   claude "Search my OneDrive for quarterly reports"
+
+   # Or manually specify a skill
+   claude "Using ms-graph-toolkit, find the Kubernetes expert in my company"
+   ```
+
+**Note:** Microsoft Graph access tokens expire after 69-90 minutes. Claude will prompt you to get a new token when needed.
+
+See [Claude Code Guide](./claude/README.md)
+
 ### Amazon Q CLI
 
 1. **Install Amazon Q CLI:**
@@ -202,6 +244,13 @@ See [Kiro IDE Guide](./kiro-ide/README.md)
 ```
 ai-config-guide/
 ├── README.md                          # This file
+├── claude/
+│   ├── README.md                      # Claude Code overview
+│   └── skills/
+│       ├── README.md                  # Skills guide
+│       └── ms-graph-toolkit/
+│           ├── SKILL.md               # Microsoft Graph toolkit skill
+│           └── scripts/               # Auto-generated scripts
 ├── amazon-q-cli/
 │   ├── README.md                      # Amazon Q CLI overview
 │   ├── mcp/
@@ -328,6 +377,12 @@ ai-config-guide/
 - **Document changes** - Maintain configuration documentation
 
 ## Additional Resources
+
+### Claude Code
+
+- Official Documentation: https://docs.anthropic.com/claude/docs/claude-code
+- GitHub Repository: https://github.com/anthropics/claude-code
+- Skills Documentation: https://docs.anthropic.com/claude/docs/skills
 
 ### Amazon Q CLI
 
