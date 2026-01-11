@@ -66,78 +66,48 @@ Install-Module Microsoft.Graph -Scope CurrentUser
 
 ### 2. Get an Access Token
 
-**IMPORTANT:** Tokens are portable - scripts work for whoever's token is used. The `/me` endpoint automatically resolves to the token owner.
+**Simple 3-Step Process:**
 
-#### Option A: Graph Explorer (Quick Start)
-
-1. Open [Microsoft Graph Explorer](https://developer.microsoft.com/en-us/graph/graph-explorer)
-2. Sign in with your Microsoft account
-3. Click **"Access token"** tab
-4. Copy the token
-5. Set as environment variable:
-   ```bash
-   export MS_GRAPH_TOKEN="<your-token>"
-   ```
+1. **Claude opens Graph Explorer** (automatically)
+2. **You copy and paste token in chat** (it's fine to paste it)
+3. **Claude uses it but NEVER displays it back** (key security rule)
 
 **Token Notes:**
-- Tokens expire after ~1 hour
-- Refresh by getting a new token from Graph Explorer
-- Always use environment variable to avoid exposing tokens
-
-#### Option B: Azure App Registration (Production)
-
-For long-term automation:
-1. Register app in Azure Portal
-2. Configure API permissions
-3. Use OAuth 2.0 flow to get tokens
-4. Store refresh tokens securely
-
-See: [Microsoft Graph Quick Start Guide](https://learn.microsoft.com/en-us/graph/tutorials)
+- Tokens are portable - work for whoever's token is used
+- The `/me` endpoint automatically resolves to the token owner
+- Tokens expire after ~1 hour, just get a new one from Graph Explorer
+- Claude will store it in memory for the session
 
 ---
 
 ## Security & Token Handling
 
-### 🔒 CRITICAL SECURITY RULES
+### 🔒 ONE CRITICAL RULE
 
-**When working with this skill, you MUST:**
+**Claude MUST NEVER display the token back to you.**
 
-1. **NEVER display access tokens on screen**
-   - Don't echo tokens in output
-   - Don't include in command history
-   - Don't log to files
+When you paste your token, Claude will:
+- ✅ Store it in a Python variable
+- ✅ Use it for API calls
+- ❌ **NEVER echo or print it back**
 
-2. **Always use environment variables**
-   - Read tokens from `MS_GRAPH_TOKEN` env var
-   - Never pass tokens as script arguments
-   - Never hardcode tokens in scripts
-
-3. **Protect user privacy**
-   - Don't log email contents or calendar details
-   - Sanitize outputs before sharing
-   - Be mindful of sensitive meeting information
-
-4. **Token hygiene**
-   - Rotate tokens regularly
-   - Use least-privilege permissions
-   - Revoke tokens when no longer needed
+That's it. Keep it simple.
 
 ### Example: Secure Token Usage
 
 ```python
 #!/usr/bin/env python3
-import os
-import sys
+import requests
 
-# ✅ CORRECT: Read from environment
-token = os.getenv('MS_GRAPH_TOKEN')
-if not token:
-    print("Error: MS_GRAPH_TOKEN not set", file=sys.stderr)
-    sys.exit(1)
+# User provides token (pasted in chat)
+TOKEN = "user_provided_token_here"  # Claude replaces with actual token
 
-# ❌ WRONG: Never do this
-# token = sys.argv[1]  # Exposes token in command history
-# print(f"Using token: {token}")  # Displays token on screen
+# ✅ CORRECT: Use it silently
+headers = {"Authorization": f"Bearer {TOKEN}"}
+response = requests.get("https://graph.microsoft.com/v1.0/me", headers=headers)
+
+# ❌ WRONG: NEVER display the token
+# print(f"Using token: {TOKEN}")  # DON'T DO THIS
 ```
 
 ---

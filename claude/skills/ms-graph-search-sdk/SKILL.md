@@ -10,13 +10,12 @@ When asked to search OneDrive, Teams, Outlook, or other Microsoft 365 services, 
 
 ## 🔒 Security-First Design
 
-**CRITICAL: This skill NEVER displays access tokens on screen.**
+**ONE CRITICAL RULE: Claude NEVER displays your token back to you.**
 
-All token handling follows strict security rules:
-- Tokens are read from `MS_GRAPH_TOKEN` environment variable only
-- Tokens are NEVER passed as command-line arguments
-- Tokens are NEVER printed to stdout or stderr
-- Tokens are NEVER logged or stored in files
+Simple workflow:
+1. Claude opens Graph Explorer for you
+2. You paste token in chat (it's fine)
+3. Claude uses it but **never echoes it back**
 
 ---
 
@@ -24,104 +23,56 @@ All token handling follows strict security rules:
 
 Check and install if needed:
 ```bash
-pip3 install -q msgraph-core requests
-```
-
-Or check before use:
-```bash
-python3 -c "import requests" 2>/dev/null || pip3 install -q requests
+pip3 install -q requests
 ```
 
 ---
 
 ## Step 2: Get Access Token
 
-### Initial Setup
+**Simple 3-Step Process:**
 
-1. **Open Graph Explorer in browser:**
+1. **Claude opens Graph Explorer** (automatically)
    ```bash
-   # macOS
-   open "https://developer.microsoft.com/en-us/graph/graph-explorer"
-
-   # Linux
-   xdg-open "https://developer.microsoft.com/en-us/graph/graph-explorer"
-
-   # Windows
-   start "https://developer.microsoft.com/en-us/graph/graph-explorer"
+   # macOS: open "https://developer.microsoft.com/en-us/graph/graph-explorer"
+   # Linux: xdg-open "https://developer.microsoft.com/en-us/graph/graph-explorer"
+   # Windows: start "https://developer.microsoft.com/en-us/graph/graph-explorer"
    ```
 
-2. **Instruct user to get token:**
-   ```
-   ✅ Opening Microsoft Graph Explorer in your browser...
+2. **You get token from browser:**
+   - Sign in with Microsoft account
+   - Click "Access token" tab
+   - Copy the token
+   - **Paste it in chat** (it's fine to paste)
 
-   To get your access token:
-   1. Sign in with your Microsoft account
-   2. Click "Access token" tab at the top
-   3. Copy the access token
-   4. Run: export MS_GRAPH_TOKEN="<paste-token-here>"
+3. **Claude uses it silently:**
+   - Stores in Python variable
+   - Makes API calls
+   - **Never displays it back**
 
-   ⚠️  IMPORTANT:
-   - Do NOT paste the token in chat
-   - Do NOT include token in command history
-   - Token expires in ~1 hour
-
-   When ready, let me know and I'll proceed with the search.
-   ```
-
-3. **User sets environment variable:**
-   ```bash
-   export MS_GRAPH_TOKEN="<their-token>"
-   ```
-
-**NEVER ask user to provide token as input or argument. Always use environment variable.**
+**Token Notes:**
+- Expires in ~1 hour, just get a new one when needed
+- Claude will store it for the session
 
 ---
 
 ## Step 3: Search Using Python
 
-### Secure Token Handling Template
-
-**✅ CORRECT - Always use this pattern:**
+### Simple Token Usage
 
 ```python
 #!/usr/bin/env python3
-import os
-import sys
 import requests
 
-# ✅ Read token from environment variable
-TOKEN = os.getenv('MS_GRAPH_TOKEN')
+# User pastes token in chat, Claude uses it
+TOKEN = "user_provided_token_here"  # Claude replaces with actual token
 
-# Check if token exists
-if not TOKEN:
-    print("❌ Error: MS_GRAPH_TOKEN environment variable not set", file=sys.stderr)
-    print("", file=sys.stderr)
-    print("To get a token:", file=sys.stderr)
-    print("1. Open https://developer.microsoft.com/en-us/graph/graph-explorer", file=sys.stderr)
-    print("2. Sign in and click 'Access token' tab", file=sys.stderr)
-    print("3. Run: export MS_GRAPH_TOKEN=\"<your-token>\"", file=sys.stderr)
-    sys.exit(1)
+# ✅ CORRECT: Use it silently
+headers = {"Authorization": f"Bearer {TOKEN}"}
+response = requests.get("https://graph.microsoft.com/v1.0/me", headers=headers)
 
-# ✅ Use token in header (never print it)
-HEADERS = {"Authorization": f"Bearer {TOKEN}"}
-
-# Continue with API calls...
-```
-
-**❌ WRONG - NEVER do this:**
-
-```python
-# ❌ NEVER pass token as argument (shows in process list)
-TOKEN = sys.argv[1]
-
-# ❌ NEVER hardcode tokens
-TOKEN = "eyJ0eXAiOiJKV1..."
-
-# ❌ NEVER print tokens
-print(f"Using token: {TOKEN}")
-
-# ❌ NEVER ask for interactive input (can be logged)
-TOKEN = input("Enter token: ")
+# ❌ WRONG: NEVER display the token
+# print(f"Using token: {TOKEN}")  # DON'T DO THIS
 ```
 
 ---
@@ -372,28 +323,21 @@ def handle_response(response, reopen_browser=False):
 ```python
 #!/usr/bin/env python3
 """
-Microsoft Graph Search - Secure Implementation
+Microsoft Graph Search - Simple & Secure
 
 Searches OneDrive and Outlook using Microsoft Graph API.
 
-Environment Variables:
-    MS_GRAPH_TOKEN - Microsoft Graph access token (required)
-
-Usage:
-    export MS_GRAPH_TOKEN="<token>"
-    python3 graph_search.py
-
 Security:
-    - Token read from environment variable only
-    - Token never displayed or logged
-    - Token never passed as argument
+    - User pastes token in chat (it's fine)
+    - Claude uses it but never displays it back
 """
 
-import os
-import sys
 import requests
 from datetime import datetime
 from zoneinfo import ZoneInfo
+
+# User pastes token in chat, Claude replaces this
+TOKEN = "user_provided_token_here"
 
 def to_central_time(iso_datetime_str):
     """Convert ISO datetime string to Central Time"""
@@ -413,23 +357,23 @@ def to_central_time(iso_datetime_str):
 def handle_response(response):
     """Handle API response with error checking"""
     if response.status_code == 401:
-        print("❌ Token expired. Get new token from Graph Explorer.", file=sys.stderr)
-        print("   https://developer.microsoft.com/en-us/graph/graph-explorer", file=sys.stderr)
+        print("❌ Token expired. Get new token from Graph Explorer.")
         return None
     elif response.status_code == 403:
-        print("❌ Permission denied.", file=sys.stderr)
+        print("❌ Permission denied.")
         return None
     elif response.status_code == 429:
-        print("❌ Rate limited. Wait and retry.", file=sys.stderr)
+        print("❌ Rate limited. Wait and retry.")
         return None
     elif response.status_code == 200:
         return response.json()
     else:
-        print(f"❌ Error {response.status_code}: {response.text}", file=sys.stderr)
+        print(f"❌ Error {response.status_code}: {response.text}")
         return None
 
-def search_onedrive(headers, query):
+def search_onedrive(query):
     """Search OneDrive files"""
+    headers = {"Authorization": f"Bearer {TOKEN}"}
     url = f"https://graph.microsoft.com/v1.0/me/drive/root/search(q='{query}')"
     response = requests.get(url, headers=headers)
     data = handle_response(response)
@@ -442,8 +386,9 @@ def search_onedrive(headers, query):
             print(f"   Modified: {to_central_time(file.get('lastModifiedDateTime', 'Unknown'))}")
             print(f"   Size: {file.get('size', 0):,} bytes\n")
 
-def search_emails(headers, query):
+def search_emails(query):
     """Search Outlook emails"""
+    headers = {"Authorization": f"Bearer {TOKEN}"}
     url = f"https://graph.microsoft.com/v1.0/me/messages?$search=\"{query}\"&$top=10"
     response = requests.get(url, headers=headers)
     data = handle_response(response)
@@ -457,29 +402,9 @@ def search_emails(headers, query):
             print(f"   From: {sender}")
             print(f"   Date: {to_central_time(msg.get('receivedDateTime', 'Unknown'))}\n")
 
-def main():
-    # ✅ Read token from environment variable
-    token = os.getenv('MS_GRAPH_TOKEN')
-
-    if not token:
-        print("❌ Error: MS_GRAPH_TOKEN environment variable not set", file=sys.stderr)
-        print("", file=sys.stderr)
-        print("To get a token:", file=sys.stderr)
-        print("1. Open https://developer.microsoft.com/en-us/graph/graph-explorer", file=sys.stderr)
-        print("2. Sign in and click 'Access token' tab", file=sys.stderr)
-        print("3. Copy the token", file=sys.stderr)
-        print("4. Run: export MS_GRAPH_TOKEN=\"<your-token>\"", file=sys.stderr)
-        sys.exit(1)
-
-    # ✅ Use token in header (never print it)
-    headers = {"Authorization": f"Bearer {token}"}
-
-    # Example searches
-    search_onedrive(headers, "report")
-    search_emails(headers, "budget")
-
-if __name__ == '__main__':
-    main()
+# Run searches
+search_onedrive("report")
+search_emails("budget")
 ```
 
 ---
@@ -606,71 +531,13 @@ def open_graph_explorer():
 - **Cleaner code** - No complex escaping or quoting
 - **Better error handling** - Native Python exceptions
 - **Easier parsing** - Direct dict access vs JSON strings
-- **Token security** - Environment variable enforcement
+- **Token security** - Claude never displays it back
 - **Type safety** - Python type hints and linting
 - **Maintainability** - Easier to read and modify
 
 ---
 
-## Token Lifecycle
-
-```
-┌─────────────────────────────────────────────────────────┐
-│ 1. User opens Graph Explorer                           │
-│    (Claude opens browser automatically)                 │
-└────────────────────┬────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 2. User signs in and copies token                      │
-│    (Token NOT shared with Claude)                       │
-└────────────────────┬────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 3. User sets environment variable:                     │
-│    export MS_GRAPH_TOKEN="<token>"                      │
-└────────────────────┬────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 4. Python script reads from environment                │
-│    TOKEN = os.getenv('MS_GRAPH_TOKEN')                  │
-└────────────────────┬────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 5. Script makes API calls                              │
-│    (Token never displayed or logged)                    │
-└────────────────────┬────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 6. Token expires (~1 hour)                             │
-│    Script returns 401 error                             │
-└────────────────────┬────────────────────────────────────┘
-                     │
-                     ▼
-┌─────────────────────────────────────────────────────────┐
-│ 7. Claude reopens browser, user gets new token         │
-│    Process repeats from step 2                          │
-└─────────────────────────────────────────────────────────┘
-```
-
----
-
 ## Troubleshooting
-
-### Token Not Set
-
-```
-❌ Error: MS_GRAPH_TOKEN environment variable not set
-```
-
-**Solution:**
-1. Open Graph Explorer
-2. Sign in and copy token
-3. Run: `export MS_GRAPH_TOKEN="<token>"`
 
 ### Token Expired
 
@@ -680,7 +547,7 @@ def open_graph_explorer():
 
 **Solution:**
 - Get new token from Graph Explorer (token expires after ~1 hour)
-- Update environment variable: `export MS_GRAPH_TOKEN="<new-token>"`
+- Paste new token in chat
 
 ### Permission Denied
 
@@ -738,16 +605,16 @@ pip3 install tzdata
 
 ## Important Notes
 
-- **Not a full SDK** - Uses requests library for simple API calls
-- **Environment variable only** - Token never passed as argument
-- **Screen protection** - Token never displayed in output
-- **Token reuse** - Store in env var, reuse until expires
+- **Simple approach** - Uses requests library for direct API calls
+- **Token flow** - You paste token in chat (it's fine), Claude never displays it back
+- **Screen protection** - Token never echoed or printed
+- **Token reuse** - Claude stores it in memory for the session
 - **Auto-install** - Claude Code can install requests automatically
-- **Same token flow** - Uses Graph Explorer for token generation
+- **Graph Explorer** - Uses Graph Explorer for token generation
 - **Central Time** - All dates/times converted to America/Chicago timezone
 
 ---
 
 **Last Updated:** 2026-01-11
 
-**Security Notice:** This skill enforces strict token security. Tokens are never displayed, logged, or passed as arguments. Always use the `MS_GRAPH_TOKEN` environment variable.
+**Security Notice:** The ONE rule: Claude never displays your token back to you. Paste it in chat, Claude uses it silently.
