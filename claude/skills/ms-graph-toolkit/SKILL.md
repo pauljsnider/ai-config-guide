@@ -75,7 +75,7 @@ Install-Module Microsoft.Graph -Scope CurrentUser
 **Token Notes:**
 - Tokens are portable - work for whoever's token is used
 - The `/me` endpoint automatically resolves to the token owner
-- Tokens expire after ~1 hour, just get a new one from Graph Explorer
+- Tokens expire after 69-90 minutes, just get a new one from Graph Explorer
 - Claude will store it in memory for the session
 
 ---

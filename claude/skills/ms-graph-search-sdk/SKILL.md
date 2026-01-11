@@ -51,7 +51,7 @@ pip3 install -q requests
    - **Never displays it back**
 
 **Token Notes:**
-- Expires in ~1 hour, just get a new one when needed
+- Expires in 69-90 minutes, just get a new one when needed
 - Claude will store it for the session
 
 ---
@@ -546,7 +546,7 @@ def open_graph_explorer():
 ```
 
 **Solution:**
-- Get new token from Graph Explorer (token expires after ~1 hour)
+- Get new token from Graph Explorer (token expires after 69-90 minutes)
 - Paste new token in chat
 
 ### Permission Denied

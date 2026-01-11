@@ -142,6 +142,8 @@ You can also explicitly reference a skill:
 claude "Using ms-graph-toolkit, schedule a meeting with Alice tomorrow at 2pm"
 ```
 
+**Note for Microsoft Graph Skills:** Access tokens expire after 69-90 minutes. Claude will prompt you to paste a new token from Graph Explorer when needed.
+
 ## Skill Structure
 
 Each skill follows this structure:

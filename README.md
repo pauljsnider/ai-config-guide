@@ -167,6 +167,8 @@ aws configure
    claude "Using ms-graph-toolkit, find the Kubernetes expert in my company"
    ```
 
+**Note:** Microsoft Graph access tokens expire after 69-90 minutes. Claude will prompt you to get a new token when needed.
+
 See [Claude Code Guide](./claude/README.md)
 
 ### Amazon Q CLI

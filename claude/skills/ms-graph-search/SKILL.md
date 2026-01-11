@@ -42,7 +42,7 @@ Simple workflow:
    - **Never displays it back**
 
 **Token Notes:**
-- Expires in ~1 hour, just get a new one when needed
+- Expires in 69-90 minutes, just get a new one when needed
 - Claude will store it for the session
 
 ---
@@ -387,7 +387,7 @@ When user asks to search Microsoft 365:
 ## Important Notes
 
 - **Token flow** - You paste token in chat (it's fine), Claude never displays it back
-- **Token expires in ~1 hour** - User will need to refresh if searches stop working
+- **Token expires in 69-90 minutes** - User will need to refresh if searches stop working
 - **Rate limits apply** - Microsoft Graph has throttling limits
 - **Permissions vary** - Some operations require admin consent
 - **Beta endpoints** exist but use `/v1.0/` for stability

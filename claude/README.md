@@ -140,6 +140,8 @@ claude "Search my OneDrive for quarterly reports"
 claude "List my calendar for this week"
 ```
 
+**Note:** Microsoft Graph access tokens expire after 69-90 minutes. You'll paste a new token when Claude prompts you.
+
 ### Development Tasks
 
 ```bash
