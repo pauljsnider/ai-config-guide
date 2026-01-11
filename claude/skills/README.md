@@ -16,7 +16,7 @@ Think of skills as "expert modes" that give Claude specialized knowledge and per
 
 ### [ms-graph-toolkit](./ms-graph-toolkit/)
 
-Microsoft Graph API integration for Microsoft 365 services.
+Microsoft Graph API integration for Microsoft 365 services with comprehensive capabilities.
 
 **Capabilities:**
 - Calendar management (find availability, book meetings, list events)
@@ -25,12 +25,40 @@ Microsoft Graph API integration for Microsoft 365 services.
 - Teams messaging (channels, chats, notifications)
 - User directory search
 - OneNote operations
+- Organizational intelligence (find experts, collaboration patterns)
+- Productivity automation (status reports, meeting analysis)
 
 **Use Cases:**
 - Schedule meetings automatically
 - Search across all Microsoft 365 data
 - Automate calendar and email workflows
 - Generate weekly status reports from calendar/tasks
+- Find organizational experts by topic
+- Analyze meeting patterns and collaboration
+
+### [ms-graph-search-sdk](./ms-graph-search-sdk/)
+
+Quick and simple Microsoft 365 search using Python and the Graph API.
+
+**Capabilities:**
+- OneDrive file search
+- Outlook email search
+- Calendar event queries
+- Teams exploration
+- Unified search across services
+
+**Use Cases:**
+- Quick file lookups in OneDrive
+- Search emails by keyword
+- Find documents shared with you
+- List upcoming meetings
+
+**Differences from ms-graph-toolkit:**
+- Simpler, lightweight Python scripts
+- Focused on search and retrieval
+- No on-demand script generation
+- Direct API calls with requests library
+- Preferred for quick queries
 
 ## Installation
 
@@ -46,15 +74,16 @@ mkdir -p ~/.claude/skills
 # Install all skills
 cp -r claude/skills/* ~/.claude/skills/
 
-# Or install specific skill
+# Or install specific skills
 cp -r claude/skills/ms-graph-toolkit ~/.claude/skills/
+cp -r claude/skills/ms-graph-search-sdk ~/.claude/skills/
 ```
 
 ### 3. Verify Installation
 
 ```bash
 ls ~/.claude/skills/
-# Should show: ms-graph-toolkit
+# Should show: ms-graph-toolkit ms-graph-search-sdk
 ```
 
 Skills are automatically discovered by Claude Code when placed in `~/.claude/skills/`.
@@ -70,7 +99,10 @@ claude "Find my calendar availability next week"
 # Automatically uses ms-graph-toolkit
 
 claude "Search my OneDrive for project reports"
-# Automatically uses ms-graph-toolkit
+# Automatically uses ms-graph-search-sdk (simpler search)
+
+claude "Find the Kubernetes expert in my company"
+# Automatically uses ms-graph-toolkit (advanced analysis)
 ```
 
 ### Manual Invocation
