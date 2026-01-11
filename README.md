@@ -152,13 +152,19 @@ aws configure
    # Create skills directory
    mkdir -p ~/.claude/skills
 
-   # Copy Microsoft Graph toolkit skill
+   # Copy Microsoft Graph skills
    cp -r claude/skills/ms-graph-toolkit ~/.claude/skills/
+   cp -r claude/skills/ms-graph-search-sdk ~/.claude/skills/
+   cp -r claude/skills/ms-graph-search ~/.claude/skills/
    ```
 
-3. **Launch:**
+3. **Use Skills:**
    ```bash
-   claude
+   # Claude automatically invokes skills based on your request
+   claude "Search my OneDrive for quarterly reports"
+
+   # Or manually specify a skill
+   claude "Using ms-graph-toolkit, find the Kubernetes expert in my company"
    ```
 
 See [Claude Code Guide](./claude/README.md)
