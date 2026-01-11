@@ -60,6 +60,31 @@ Quick and simple Microsoft 365 search using Python and the Graph API.
 - Direct API calls with requests library
 - Preferred for quick queries
 
+### [ms-graph-search](./ms-graph-search/)
+
+Lightweight Microsoft 365 search using curl and bash commands.
+
+**Capabilities:**
+- OneDrive and SharePoint file search
+- Outlook email search
+- Teams chat and channel messages
+- Calendar event queries
+- Unified search across all services
+- WebFetch integration for documentation lookup
+
+**Use Cases:**
+- Quick searches without Python dependencies
+- Direct curl-based API calls
+- Look up API documentation on-the-fly
+- Debug and troubleshoot Graph API calls
+
+**Differences from ms-graph-search-sdk:**
+- Uses curl instead of Python
+- Can fetch documentation with WebFetch when needed
+- Lower overhead (no Python dependencies)
+- Great for quick one-off queries
+- Ideal for learning Graph API
+
 ## Installation
 
 ### 1. Create Skills Directory
@@ -77,13 +102,14 @@ cp -r claude/skills/* ~/.claude/skills/
 # Or install specific skills
 cp -r claude/skills/ms-graph-toolkit ~/.claude/skills/
 cp -r claude/skills/ms-graph-search-sdk ~/.claude/skills/
+cp -r claude/skills/ms-graph-search ~/.claude/skills/
 ```
 
 ### 3. Verify Installation
 
 ```bash
 ls ~/.claude/skills/
-# Should show: ms-graph-toolkit ms-graph-search-sdk
+# Should show: ms-graph-toolkit ms-graph-search-sdk ms-graph-search
 ```
 
 Skills are automatically discovered by Claude Code when placed in `~/.claude/skills/`.
@@ -99,10 +125,13 @@ claude "Find my calendar availability next week"
 # Automatically uses ms-graph-toolkit
 
 claude "Search my OneDrive for project reports"
-# Automatically uses ms-graph-search-sdk (simpler search)
+# Automatically uses ms-graph-search or ms-graph-search-sdk
 
 claude "Find the Kubernetes expert in my company"
 # Automatically uses ms-graph-toolkit (advanced analysis)
+
+claude "Show me API documentation for OneDrive file search"
+# Automatically uses ms-graph-search (has WebFetch)
 ```
 
 ### Manual Invocation
